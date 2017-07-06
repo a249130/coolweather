@@ -1,5 +1,6 @@
 package com.coolweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.coolweather.android.gson.Forecast;
 import com.coolweather.android.gson.Weather;
+import com.coolweather.android.service.AutoUpdateService;
 import com.coolweather.android.util.HttpUtil;
 import com.coolweather.android.util.Utility;
 
@@ -105,6 +107,7 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                Log.d("mWeatherId",mWeatherId);
                 requestWeather(mWeatherId);
             }
         });
@@ -128,6 +131,7 @@ public class WeatherActivity extends AppCompatActivity {
     public void requestWeather(final String weatherId) {
 //        String weatherUrl = "https://free-api.heweather.com/v5/weather?city="+weatherId+"&key=52f860176ebb4ff0bf866ea089419e85";
         Log.d("test", "weatherId:" + weatherId);
+        mWeatherId = weatherId;
         String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=52f860176ebb4ff0bf866ea089419e85";
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
             @Override
@@ -149,7 +153,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (weather != null && weather.status.equals("ok")) {
-                            Log.d("test", "cityName:"+weather.basic.cityName);
+                            Log.d("test", "cityName:"+weather.basic.cityName+"-"+responseText);
                             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this).edit();
                             editor.putString("weather", responseText);
                             editor.apply();
@@ -201,6 +205,8 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         weatherLayout.setVisibility(View.VISIBLE);
         sportText.setText(sport);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
     /**
      * 加载必应每日一图
