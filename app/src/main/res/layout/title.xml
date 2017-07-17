@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    tools:context="com.coolweather.android.WeatherActivity">
+    tools:context="com.coolweather.android.com.coolweather.yk.WeatherActivity">
 
     <Button
         android:id="@+id/nav_button"
